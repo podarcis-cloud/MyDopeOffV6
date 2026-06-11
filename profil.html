@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="color-scheme" content="light only"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+<title>Lucide · Profil Neuro</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0d0d0d;--ink2:#2a2a2a;--ink3:#666;
+  --red:#d4001a;--blue:#0f2f7a;--green:#1a6640;--orange:#b05800;--purple:#6a1060;
+  --cream:#f7f5f0;--cream2:#ede9e0;--white:#fff;--border:#e0dbd0;
+  color-scheme:light only;
+  forced-color-adjust:none;
+  --fa:'Syne',sans-serif;--fb:'DM Sans',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{background:#f7f5f0 !important;color:#0d0d0d !important;font-family:var(--fb);max-width:430px;margin:0 auto;min-height:100vh;}
+
+.topbar{position:sticky;top:0;z-index:100;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:14px 20px;}
+.btn-back{background:none;border:1.5px solid var(--border);border-radius:4px;padding:7px 13px;font-family:var(--fa);font-size:11px;color:var(--ink3);cursor:pointer;}
+.btn-back:active{background:var(--cream2);}
+.topbar-title{font-family:var(--fa);font-size:13px;font-weight:700;}
+
+/* SCREENS */
+.screen{display:none;padding:20px 20px 80px;}
+.screen.active{display:block;animation:fadeUp .25s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* HOME SCREEN */
+.profile-hero{text-align:center;padding:24px 0 20px;}
+.profile-avatar{width:80px;height:80px;border-radius:50%;background:var(--ink);color:var(--white);font-family:var(--fa);font-size:32px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;}
+.profile-name{font-family:var(--fa);font-size:22px;font-weight:800;margin-bottom:4px;}
+.profile-sub{font-size:13px;color:var(--ink3);}
+
+.neuro-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.neuro-card{background:var(--white);border:1.5px solid var(--border);border-radius:4px;padding:14px;text-align:center;}
+.neuro-val{font-family:var(--fa);font-size:28px;font-weight:800;margin-bottom:4px;}
+.neuro-lbl{font-size:10px;color:var(--ink3);letter-spacing:.08em;text-transform:uppercase;}
+.neuro-sub{font-size:11px;color:var(--ink3);margin-top:3px;}
+
+.radar-wrap{background:var(--white);border:1.5px solid var(--border);border-radius:4px;padding:16px;margin-bottom:14px;}
+.radar-title{font-family:var(--fa);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px;}
+canvas#radar{display:block;margin:0 auto;}
+
+.section-label{font-family:var(--fa);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin:14px 0 8px;}
+
+.test-card{background:var(--white);border:1.5px solid var(--border);border-radius:4px;padding:14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:border-color .15s,transform .15s;}
+.test-card:active{transform:scale(.98);}
+.test-icon{font-size:28px;flex-shrink:0;}
+.test-info{flex:1;}
+.test-name{font-family:var(--fa);font-size:14px;font-weight:700;margin-bottom:2px;}
+.test-desc{font-size:11px;color:var(--ink3);}
+.test-status{font-size:11px;font-family:var(--fa);padding:3px 8px;border-radius:2px;}
+.test-status.done{background:rgba(26,102,64,.1);color:var(--green);border:1px solid rgba(26,102,64,.25);}
+.test-status.todo{background:var(--cream2);color:var(--ink3);}
+
+/* QUIZ SCREEN */
+.q-header{margin-bottom:20px;}
+.q-badge{font-family:var(--fa);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px;}
+.q-title{font-family:var(--fa);font-size:20px;font-weight:800;margin-bottom:8px;}
+.q-progress-bar{height:4px;background:var(--cream2);border-radius:2px;overflow:hidden;margin-bottom:20px;}
+.q-progress-fill{height:100%;background:var(--blue);border-radius:2px;transition:width .3s ease;}
+.q-num{font-size:11px;color:var(--ink3);margin-bottom:10px;}
+.q-text{font-family:var(--fa);font-size:16px;font-weight:700;line-height:1.4;margin-bottom:20px;}
+.q-options{display:flex;flex-direction:column;gap:8px;}
+.q-opt{width:100%;text-align:left;padding:13px 15px;background:var(--white);border:1.5px solid var(--border);border-radius:4px;font-family:var(--fb);font-size:14px;cursor:pointer;transition:border-color .15s,background .15s;}
+.q-opt:active{border-color:var(--blue);background:rgba(15,47,122,.05);}
+.q-science{background:rgba(15,47,122,.04);border:1px solid rgba(15,47,122,.12);border-radius:4px;padding:10px 12px;font-size:11px;color:var(--blue);line-height:1.55;margin-top:16px;}
+
+/* RESULT SCREEN */
+.result-header{text-align:center;padding:20px 0;}
+.result-icon{font-size:56px;margin-bottom:12px;}
+.result-title{font-family:var(--fa);font-size:26px;font-weight:800;margin-bottom:6px;}
+.result-sub{font-size:13px;color:var(--ink3);line-height:1.6;}
+.score-badge{display:inline-block;font-family:var(--fa);font-size:28px;font-weight:800;padding:12px 24px;border-radius:4px;margin:12px 0;}
+.result-section{background:var(--white);border:1.5px solid var(--border);border-radius:4px;padding:14px;margin-bottom:10px;}
+.result-section-title{font-family:var(--fa);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px;}
+.rec-item{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--cream2);}
+.rec-item:last-child{border-bottom:none;}
+.rec-icon{font-size:18px;flex-shrink:0;}
+.rec-text{font-size:13px;line-height:1.5;color:var(--ink2);}
+.rec-text strong{color:var(--ink);}
+
+/* PROFILE COMPLETION */
+.completion-bar-wrap{background:var(--white);border:1.5px solid var(--border);border-radius:4px;padding:14px;margin-bottom:14px;}
+.completion-label{font-family:var(--fa);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px;display:flex;justify-content:space-between;}
+.completion-bar{height:8px;background:var(--cream2);border-radius:4px;overflow:hidden;}
+.completion-fill{height:100%;background:var(--blue);border-radius:4px;transition:width .5s ease;}
+
+.btn-primary{width:100%;padding:15px;font-family:var(--fa);font-size:14px;font-weight:700;background:var(--ink);color:var(--white);border:none;border-radius:4px;cursor:pointer;margin-top:8px;}
+.btn-primary:active{opacity:.8;}
+.btn-outline{width:100%;padding:13px;font-family:var(--fa);font-size:13px;background:transparent;border:1.5px solid var(--border);border-radius:4px;color:var(--ink3);cursor:pointer;margin-top:6px;}
+.btn-outline:active{background:var(--cream2);}
+
+/* NEURO PROFILE BARS */
+.neuro-bar-row{margin-bottom:10px;}
+.neuro-bar-head{display:flex;justify-content:space-between;margin-bottom:4px;}
+.neuro-bar-name{font-size:12px;font-family:var(--fa);font-weight:700;}
+.neuro-bar-val{font-size:12px;color:var(--ink3);}
+.neuro-bar-track{height:8px;background:var(--cream2);border-radius:4px;overflow:hidden;}
+.neuro-bar-fill{height:100%;border-radius:4px;transition:width .5s ease;}
+</style>
+<style id="lucide-override">
+:root{
+  --bg:#f5f3ff;--surface:#fff;
+  --primary:#5b4cf5;--primary-dk:#4338ca;--primary-lt:rgba(91,76,245,.1);
+  --teal:#0e9f9b;--teal-lt:rgba(14,159,155,.1);
+  --danger:#dc2626;--danger-lt:rgba(220,38,38,.08);
+  --warn:#d97706;--warn-lt:rgba(217,119,6,.08);
+  --success:#059669;--success-lt:rgba(5,150,105,.09);
+  --ink:#1e1b4b;--ink2:#374151;--ink3:#6b7280;
+  --border:#e8e6f0;--surface2:#faf9ff;
+  --shadow:0 1px 3px rgba(91,76,245,.1),0 1px 2px rgba(91,76,245,.06);
+  --shadow-md:0 4px 16px rgba(91,76,245,.12);
+  --r:14px;--r-sm:10px;
+    /* Legacy var aliases */
+  --cream:#f5f3ff;--cream2:#ede9ff;--white:#fff;
+  --red:#dc2626;--blue:#5b4cf5;--purple:#6a1060;
+  --green:#059669;--orange:#d97706;
+  color-scheme:light only;forced-color-adjust:none;
+}
+html,body{background:#f5f3ff !important;color:#1e1b4b !important;font-family:'DM Sans',sans-serif;}
+.topbar{background:#fff !important;border-bottom:1.5px solid #e8e6f0 !important;box-shadow:0 1px 8px rgba(91,76,245,.06);}
+.topbar-title{font-family:'Syne',sans-serif;color:#1e1b4b !important;font-weight:700;font-size:13px;}
+.topbar-tag{font-family:'Syne',sans-serif;font-size:9px;color:#9ca3af;letter-spacing:.1em;}
+.btn-back{background:#f5f3ff !important;border:1.5px solid #e8e6f0 !important;border-radius:10px !important;color:#5b4cf5 !important;font-family:'Syne',sans-serif;padding:7px 13px;font-size:11px;cursor:pointer;}
+.btn-back:hover{background:#ede9ff !important;}
+.tabs{background:#fff !important;border-bottom:2px solid #e8e6f0 !important;}
+.tab-btn{font-family:'Syne',sans-serif;}
+.tab-btn.active{color:#5b4cf5 !important;border-bottom-color:#5b4cf5 !important;}
+.section-label{font-family:'Syne',sans-serif;color:#6b7280;letter-spacing:.14em;text-transform:uppercase;font-size:10px;}
+.stat-card,.chart-wrap,.log-form,.log-entry,.test-card,.q-card,.goal-card,
+.result-section,.mission-card,.harm-card,.rdr-item,.donation-wrap,
+.no-data,.tip-row,.score-list,.road-text,.impact-card,.neuro-card,
+.completion-bar-wrap,.radar-wrap{
+  background:#fff !important;border-color:#e8e6f0 !important;
+  border-radius:12px !important;
+  box-shadow:0 1px 3px rgba(91,76,245,.08) !important;
+}
+.btn-primary,.btn-log{background:#5b4cf5 !important;border-radius:10px !important;}
+.btn-outline,.btn-log-clean,.modal-close-btn,.btn-back,.amount-btn{border-radius:10px !important;}
+.streak-banner{background:linear-gradient(135deg,#5b4cf5,#4338ca) !important;border-radius:14px !important;}
+.emergency-banner{border-radius:12px !important;}
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:64px;background:#fff;border-top:1px solid #e8e6f0;display:flex;z-index:9999;box-shadow:0 -4px 20px rgba(91,76,245,.07);}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-decoration:none;color:#9ca3af;padding:8px 4px;-webkit-tap-highlight-color:transparent;transition:color .15s;}
+.bn-item svg{width:22px;height:22px;stroke-width:1.8;transition:stroke-width .15s;}
+.bn-item span{font-family:'Syne',sans-serif;font-size:9px;letter-spacing:.04em;text-transform:uppercase;}
+.bn-item.active{color:#5b4cf5;}
+.bn-item.active svg{stroke-width:2.3;}
+[class*="tab-panel"].active,[class*="screen"].active,.page,.page-pad,.tab-panel.active{padding-bottom:80px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <button class="btn-back" id="back-btn">← Retour</button>
+  <div class="topbar-title">🧬 Profil Neuro</div>
+  <span style="font-family:var(--fa);font-size:10px;color:var(--ink3);">V6</span>
+</div>
+
+<!-- SCREEN: HOME -->
+<div id="screen-home" class="screen active">
+  <div class="profile-hero">
+    <div class="profile-avatar" id="avatar-initials">?</div>
+    <div class="profile-name" id="profile-name">Ton profil</div>
+    <div class="profile-sub" id="profile-sub">Complète les évaluations pour débloquer ton profil neurologique</div>
+  </div>
+
+  <div class="completion-bar-wrap">
+    <div class="completion-label">
+      <span>Profil complété</span>
+      <span id="completion-pct">0%</span>
+    </div>
+    <div class="completion-bar">
+      <div class="completion-fill" id="completion-fill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div id="neuro-profile-section" style="display:none;">
+    <div class="section-label">Profil neurologique</div>
+    <div class="radar-wrap">
+      <div class="radar-title">Axes neuro · basés sur tes évaluations</div>
+      <canvas id="radar" width="280" height="200"></canvas>
+    </div>
+    <div class="section-label">Circuits impliqués</div>
+    <div id="neuro-bars"></div>
+  </div>
+
+  <div class="section-label">Évaluations disponibles</div>
+  <div id="tests-list"></div>
+</div>
+
+<!-- SCREEN: QUIZ -->
+<div id="screen-quiz" class="screen">
+  <div class="q-header">
+    <div class="q-badge" id="q-badge">—</div>
+    <div class="q-title" id="q-title">—</div>
+    <div class="q-progress-bar"><div class="q-progress-fill" id="q-progress-fill" style="width:0%"></div></div>
+  </div>
+  <div class="q-num" id="q-num"></div>
+  <div class="q-text" id="q-text"></div>
+  <div class="q-options" id="q-options"></div>
+  <div class="q-science" id="q-science" style="display:none;"></div>
+</div>
+
+<!-- SCREEN: RESULT -->
+<div id="screen-result" class="screen">
+  <div id="result-content"></div>
+</div>
+
+<script>
+const params = new URLSearchParams(location.search);
+const userName = params.get('name') || '';
+const userRegion = params.get('region') || 'BE';
+
+document.getElementById('back-btn').onclick = () => {
+  if (currentScreen === 'home') {
+    location.href = `index.html${userName ? '?name='+encodeURIComponent(userName)+'&region='+userRegion : ''}`;
+  } else {
+    showScreen('home');
+  }
+};
+
+const PKEY = 'ctc_v6_profil';
+function loadProfil() { try { return JSON.parse(localStorage.getItem(PKEY)) || {}; } catch(e){ return {}; } }
+function saveProfil(d) { try { localStorage.setItem(PKEY, JSON.stringify(d)); } catch(e){} }
+
+let currentScreen = 'home';
+let activeTest = null;
+let qIndex = 0;
+let answers = [];
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  currentScreen = id;
+}
+
+// ════════════════════════════════════════
+// TESTS DEFINITIONS
+// ════════════════════════════════════════
+const TESTS = [
+  {
+    id: 'dast10',
+    name: 'DAST-10',
+    icon: '🔬',
+    desc: 'Drug Abuse Screening Test · 10 questions · Standard OMS',
+    duration: '3 min',
+    neuroAxis: 'impulsivite',
+    questions: [
+      { q: "As-tu consommé des drogues autrement que pour des raisons médicales ?", sci: "Indicateur d'usage récréatif ou d'automédication.", opts: ["Non","Oui"], scores: [0,1] },
+      { q: "As-tu consommé plus d'une drogue à la fois ?", sci: "La polyconsommation augmente les risques de manière non-linéaire.", opts: ["Non","Oui"], scores: [0,1] },
+      { q: "Peux-tu te passer de drogues chaque semaine ?", sci: "Mesure la dépendance comportementale hebdomadaire.", opts: ["Oui","Non"], scores: [0,1] },
+      { q: "As-tu déjà eu une hallucination à cause de la drogue ?", sci: "Indicateur de consommation à risque élevé.", opts: ["Non","Oui"], scores: [0,1] },
+      { q: "As-tu eu des problèmes liés à ta consommation ?", sci: "Conséquences sociales, professionnelles ou légales.", opts: ["Non","Oui"], scores: [0,1] },
+      { q: "Ta famille t'a-t-elle fait des remarques sur ta consommation ?", sci: "Le feedback social est un indicateur précoce de problème.", opts: ["Non","Oui"], scores: [0,1] },
+      { q: "As-tu négligé ta famille à cause de la drogue ?", sci: "Indicateur d'impact relationnel.", opts: ["Non","Oui"], scores: [0,1] },
+      { q: "As-tu consommé illégalement pour te sentir mieux ?", sci: "Automédication : facteur de risque de dépendance.", opts: ["Non","Oui"], scores: [0,1] },
+      { q: "As-tu eu des symptômes de manque ?", sci: "Dépendance physique documentée.", opts: ["Non","Oui"], scores: [0,1] },
+      { q: "As-tu eu des problèmes médicaux liés à ta consommation ?", sci: "Indicateur de dommages organiques.", opts: ["Non","Oui"], scores: [0,1] }
+    ],
+    interp: s => s === 0 ? { label:'Pas de problème détecté', color:'var(--green)', level:0, txt:'Aucun signe de problème lié à l\'usage de drogues.' }
+      : s <= 2 ? { label:'Risque faible', color:'rgba(26,102,64,.7)', level:1, txt:'Usage à surveiller. Quelques comportements à risque identifiés.' }
+      : s <= 5 ? { label:'Risque modéré', color:'var(--orange)', level:2, txt:'Consultation recommandée. Des habitudes problématiques sont présentes.' }
+      : { label:'Risque élevé', color:'var(--red)', level:3, txt:'Consultation spécialisée fortement conseillée. Des dommages sont probables.' }
+  },
+  {
+    id: 'audit',
+    name: 'AUDIT Alcool',
+    icon: '⚗',
+    desc: 'Alcohol Use Disorders Identification Test · OMS · 10 questions',
+    duration: '4 min',
+    neuroAxis: 'craving',
+    questions: [
+      { q: "Fréquence de consommation d'alcool ?", sci: "Mesure la régularité d'usage.", opts: ["Jamais","1×/mois ou moins","2–4×/mois","2–3×/semaine","4+ ×/semaine"], scores: [0,1,2,3,4] },
+      { q: "Nombre de verres lors d'une occasion typique ?", sci: "La quantité par session détermine le risque d'intoxication.", opts: ["1–2","3–4","5–6","7–9","10+"], scores: [0,1,2,3,4] },
+      { q: "Fréquence de 6 verres ou plus par occasion ?", sci: "Le binge drinking est un facteur de risque indépendant.", opts: ["Jamais","Moins d'1×/mois","1×/mois","1×/semaine","Quotidien ou presque"], scores: [0,1,2,3,4] },
+      { q: "As-tu été incapable d'arrêter une fois commencé ?", sci: "Indicateur de perte de contrôle.", opts: ["Jamais","Moins d'1×/mois","1×/mois","1×/semaine","Quotidien ou presque"], scores: [0,1,2,3,4] },
+      { q: "As-tu manqué des obligations à cause de l'alcool ?", sci: "Impact fonctionnel de la consommation.", opts: ["Jamais","Moins d'1×/mois","1×/mois","1×/semaine","Quotidien ou presque"], scores: [0,1,2,3,4] },
+      { q: "As-tu eu besoin de boire le matin pour te sentir mieux ?", sci: "Signe de dépendance physique à l'alcool.", opts: ["Jamais","Moins d'1×/mois","1×/mois","1×/semaine","Quotidien ou presque"], scores: [0,1,2,3,4] },
+      { q: "As-tu eu des remords après avoir bu ?", sci: "Indicateur de dissonance cognitive liée à l'alcool.", opts: ["Jamais","Moins d'1×/mois","1×/mois","1×/semaine","Quotidien ou presque"], scores: [0,1,2,3,4] },
+      { q: "As-tu oublié ce qui s'est passé après avoir bu ?", sci: "Les blackouts indiquent une intoxication sévère.", opts: ["Jamais","Moins d'1×/mois","1×/mois","1×/semaine","Quotidien ou presque"], scores: [0,1,2,3,4] },
+      { q: "As-tu blessé quelqu'un (toi ou autrui) à cause de l'alcool ?", sci: "Conséquences comportementales de l'ivresse.", opts: ["Non","Oui, pas la dernière année","Oui, cette année"], scores: [0,2,4] },
+      { q: "Un proche a-t-il exprimé de l'inquiétude pour ta consommation ?", sci: "Le feedback social est souvent plus précoce que l'auto-évaluation.", opts: ["Non","Oui, pas la dernière année","Oui, cette année"], scores: [0,2,4] }
+    ],
+    interp: s => s <= 7 ? { label:'Consommation à faible risque', color:'var(--green)', level:0, txt:'Ta consommation d\'alcool ne présente pas de signe de problème majeur.' }
+      : s <= 15 ? { label:'Consommation à risque', color:'var(--orange)', level:1, txt:'Des signes d\'usage nocif sont présents. Réduction conseillée.' }
+      : s <= 19 ? { label:'Dépendance probable', color:'var(--red)', level:2, txt:'Nombreux signes de dépendance à l\'alcool. Consultation spécialisée nécessaire.' }
+      : { label:'Dépendance sévère', color:'var(--red)', level:3, txt:'Dépendance à l\'alcool sévère. Un suivi médical est indispensable pour un sevrage sécurisé.' }
+  },
+  {
+    id: 'impulsivite',
+    name: 'Impulsivité & Contrôle',
+    icon: '⚡',
+    desc: 'Adapté de la BIS-11 · Facteur neurologique de risque d\'addiction',
+    duration: '4 min',
+    neuroAxis: 'impulsivite',
+    questions: [
+      { q: "Je planifie mes tâches soigneusement.", sci: "Impulsivité de planification (attention).", opts: ["Rarement","Parfois","Souvent","Presque toujours"], scores: [4,3,2,1] },
+      { q: "Je fais les choses sans réfléchir.", sci: "Impulsivité motrice directe.", opts: ["Rarement","Parfois","Souvent","Presque toujours"], scores: [1,2,3,4] },
+      { q: "Je prends des décisions rapidement.", sci: "Décision impulsive vs délibérée.", opts: ["Rarement","Parfois","Souvent","Presque toujours"], scores: [1,2,3,4] },
+      { q: "Je me concentre facilement.", sci: "Impulsivité attentionnelle.", opts: ["Rarement","Parfois","Souvent","Presque toujours"], scores: [4,3,2,1] },
+      { q: "Je pense à l'avenir.", sci: "Orientation temporelle future, protection contre l'impulsivité.", opts: ["Rarement","Parfois","Souvent","Presque toujours"], scores: [4,3,2,1] },
+      { q: "J'ai du mal à rester en place.", sci: "Impulsivité motrice/hyperactivité.", opts: ["Rarement","Parfois","Souvent","Presque toujours"], scores: [1,2,3,4] },
+      { q: "Je dépense plus que prévu.", sci: "Impulsivité financière, lien avec l'addiction.", opts: ["Rarement","Parfois","Souvent","Presque toujours"], scores: [1,2,3,4] },
+      { q: "Je suis une personne qui pense à long terme.", sci: "Projection temporelle protectrice.", opts: ["Rarement","Parfois","Souvent","Presque toujours"], scores: [4,3,2,1] }
+    ],
+    interp: s => s <= 14 ? { label:'Faible impulsivité', color:'var(--green)', level:0, txt:'Bon contrôle inhibiteur. Circuit préfrontal bien développé.' }
+      : s <= 22 ? { label:'Impulsivité modérée', color:'var(--orange)', level:1, txt:'Tendance à l\'action impulsive. Les exercices de contrôle cognitif sont bénéfiques.' }
+      : { label:'Impulsivité élevée', color:'var(--red)', level:2, txt:'Facteur de risque élevé pour les addictions. Le renforcement du cortex préfrontal est prioritaire.' }
+  },
+  {
+    id: 'anxiete',
+    name: 'Anxiété & Stress',
+    icon: '🌀',
+    desc: 'GAD-7 adapté · Lien entre anxiété et consommation',
+    duration: '3 min',
+    neuroAxis: 'regulation',
+    questions: [
+      { q: "Te sens-tu nerveux(se) ou anxieux(se) ?", sci: "Anxiété généralisée, lien avec automédication.", opts: ["Jamais","Quelques jours","La moitié du temps","Presque tous les jours"], scores: [0,1,2,3] },
+      { q: "Tu n'arrives pas à te débarrasser de tes inquiétudes ?", sci: "Rumination : facteur de risque de consommation compensatoire.", opts: ["Jamais","Quelques jours","La moitié du temps","Presque tous les jours"], scores: [0,1,2,3] },
+      { q: "Tu t'inquiètes trop pour des choses différentes ?", sci: "Anxiété diffuse associée à usage de substances anxiolytiques.", opts: ["Jamais","Quelques jours","La moitié du temps","Presque tous les jours"], scores: [0,1,2,3] },
+      { q: "Tu as du mal à te détendre ?", sci: "Hyperéveil sympathique.", opts: ["Jamais","Quelques jours","La moitié du temps","Presque tous les jours"], scores: [0,1,2,3] },
+      { q: "Tu es tellement agité(e) que tu as du mal à rester en place ?", sci: "Agitation motrice liée à l'anxiété.", opts: ["Jamais","Quelques jours","La moitié du temps","Presque tous les jours"], scores: [0,1,2,3] },
+      { q: "Tu te montres facilement irrité(e) ou agacé(e) ?", sci: "Irritabilité : signe d'anxiété ou de sevrage.", opts: ["Jamais","Quelques jours","La moitié du temps","Presque tous les jours"], scores: [0,1,2,3] },
+      { q: "Tu as peur qu'il arrive quelque chose de terrible ?", sci: "Anticipation catastrophique.", opts: ["Jamais","Quelques jours","La moitié du temps","Presque tous les jours"], scores: [0,1,2,3] }
+    ],
+    interp: s => s <= 4 ? { label:'Anxiété minimale', color:'var(--green)', level:0, txt:'Peu de signes d\'anxiété. Bon équilibre nerveux.' }
+      : s <= 9 ? { label:'Anxiété légère', color:'rgba(26,102,64,.7)', level:1, txt:'Anxiété présente mais gérée. Surveiller les habitudes de consommation compensatoire.' }
+      : s <= 14 ? { label:'Anxiété modérée', color:'var(--orange)', level:2, txt:'Anxiété significative. Risque d\'automédication avec alcool/benzos/cannabis.' }
+      : { label:'Anxiété sévère', color:'var(--red)', level:3, txt:'Anxiété sévère nécessitant une prise en charge. Éviter les substances comme mode de gestion.' }
+  },
+  {
+    id: 'motivation',
+    name: 'Motivation au changement',
+    icon: '🎯',
+    desc: 'Stades de Prochaska & DiClemente · Évalue où tu en es',
+    duration: '3 min',
+    neuroAxis: 'plasticite',
+    questions: [
+      { q: "Je pense que ma consommation pose un problème.", sci: "Prise de conscience — stade de précontemplation/contemplation.", opts: ["Pas du tout","Un peu","Moyennement","Tout à fait"], scores: [0,1,2,3] },
+      { q: "Je veux changer quelque chose dans ma consommation.", sci: "Intention de changement — stade de contemplation.", opts: ["Pas du tout","Un peu","Moyennement","Tout à fait"], scores: [0,1,2,3] },
+      { q: "J'ai déjà essayé de réduire ou d'arrêter.", sci: "Tentatives passées de changement.", opts: ["Jamais","Une fois","Plusieurs fois","Régulièrement"], scores: [0,1,2,3] },
+      { q: "Je suis capable de changer si je le veux vraiment.", sci: "Auto-efficacité : facteur le plus prédictif du succès.", opts: ["Pas sûr(e)","Peut-être","Probablement","Certainement"], scores: [0,1,2,3] },
+      { q: "J'ai des personnes qui peuvent m'aider si je veux changer.", sci: "Soutien social : puissant prédicteur de réussite.", opts: ["Non","Peu-être un(e)","Oui, quelques-un(e)s","Oui, plusieurs"], scores: [0,1,2,3] },
+      { q: "Les bénéfices de changer l'emportent sur les inconvénients.", sci: "Balance décisionnelle — pensée motivationnelle.", opts: ["Non","Je ne sais pas","Probablement","Clairement oui"], scores: [0,1,2,3] }
+    ],
+    interp: s => s <= 5 ? { label:'Précontemplation', color:'var(--ink3)', level:0, txt:'Pas encore prêt(e) à changer. C\'est normal. La prise de conscience est déjà un premier pas.' }
+      : s <= 10 ? { label:'Contemplation', color:'var(--blue)', level:1, txt:'Tu envisages le changement. L\'ambivalence est normale à ce stade.' }
+      : s <= 15 ? { label:'Préparation', color:'var(--orange)', level:2, txt:'Tu es prêt(e) à agir. Établir un plan concret augmente de 3× les chances de succès.' }
+      : { label:'Action / Maintien', color:'var(--green)', level:3, txt:'Tu es engagé(e) dans le changement. Focus sur la prévention des rechutes.' }
+  },
+  {
+    id: 'depression',
+    name: 'Humeur & Dépression',
+    icon: '🌧',
+    desc: 'PHQ-9 adapté · Lien entre dépression et addictions',
+    duration: '4 min',
+    neuroAxis: 'regulation',
+    questions: [
+      { q: "Peu d'intérêt ou de plaisir à faire les choses ?", sci: "Anhédonie : symptôme dépressif central, lié au déficit dopaminergique.", opts: ["Jamais","Quelques jours","La moitié du temps","Presque tous les jours"], scores: [0,1,2,3] },
+      { q: "Te sens-tu triste, déprimé(e) ou sans espoir ?", sci: "Affect dépressif.", opts: ["Jamais","Quelques jours","La moitié du temps","Presque tous les jours"], scores: [0,1,2,3] },
+      { q: "Problèmes d'endormissement, de sommeil ou trop dormir ?", sci: "Dysrégulation circadienne liée à la dépression et aux substances.", opts: ["Jamais","Quelques jours","La moitié du temps","Presque tous les jours"], scores: [0,1,2,3] },
+      { q: "Te sens-tu fatigué(e) ou manques-tu d'énergie ?", sci: "Fatigue centrale : symptôme transversal dépression/addiction.", opts: ["Jamais","Quelques jours","La moitié du temps","Presque tous les jours"], scores: [0,1,2,3] },
+      { q: "Mauvais appétit ou trop manger ?", sci: "Dérégulation des circuits récompense/satiété.", opts: ["Jamais","Quelques jours","La moitié du temps","Presque tous les jours"], scores: [0,1,2,3] },
+      { q: "Te sens-tu comme un(e) raté(e) ou mauvais(e) ?", sci: "Estime de soi effondrée : facteur de rechute majeur.", opts: ["Jamais","Quelques jours","La moitié du temps","Presque tous les jours"], scores: [0,1,2,3] },
+      { q: "Difficultés à te concentrer ?", sci: "Déficits exécutifs communs dépression et addictions.", opts: ["Jamais","Quelques jours","La moitié du temps","Presque tous les jours"], scores: [0,1,2,3] }
+    ],
+    interp: s => s <= 4 ? { label:'Humeur stable', color:'var(--green)', level:0, txt:'Peu de signes de dépression.' }
+      : s <= 9 ? { label:'Dépression légère', color:'rgba(26,102,64,.7)', level:1, txt:'Quelques symptômes dépressifs. Surveiller l\'usage de substances comme automédication.' }
+      : s <= 14 ? { label:'Dépression modérée', color:'var(--orange)', level:2, txt:'Dépression modérée. Risque élevé d\'automédication. Consultation recommandée.' }
+      : { label:'Dépression sévère', color:'var(--red)', level:3, txt:'Dépression sévère. Double diagnostic fréquent avec addiction. Consultation urgente.' }
+  }
+];
+
+const NEURO_AXES = {
+  impulsivite:   { label:'Contrôle inhibiteur', desc:'Cortex préfrontal ventrolatéral', color:'#d4001a' },
+  craving:       { label:'Résistance au craving', desc:'Noyau accumbens · Striatum', color:'#0f2f7a' },
+  regulation:    { label:'Régulation émotionnelle', desc:'Amygdale · Cortex cingulaire', color:'#6a1060' },
+  plasticite:    { label:'Plasticité motivationnelle', desc:'Cortex préfrontal médian', color:'#1a6640' },
+};
+
+// ── HOME ──
+function renderHome() {
+  const p = loadProfil();
+  const name = userName || 'Toi';
+  const initials = name.slice(0,2).toUpperCase();
+  document.getElementById('avatar-initials').textContent = initials;
+  document.getElementById('profile-name').textContent = name;
+
+  const doneCount = TESTS.filter(t => p[t.id]).length;
+  const pct = Math.round(doneCount / TESTS.length * 100);
+  document.getElementById('completion-pct').textContent = pct + '%';
+  document.getElementById('completion-fill').style.width = pct + '%';
+  document.getElementById('profile-sub').textContent =
+    doneCount === 0 ? 'Complète les évaluations pour débloquer ton profil neurologique'
+    : `${doneCount}/${TESTS.length} évaluations complétées`;
+
+  // Tests list
+  document.getElementById('tests-list').innerHTML = TESTS.map(t => {
+    const done = !!p[t.id];
+    const res = done ? t.interp(p[t.id].score) : null;
+    return `<div class="test-card" onclick="startTest('${t.id}')">
+      <div class="test-icon">${t.icon}</div>
+      <div class="test-info">
+        <div class="test-name">${t.name}</div>
+        <div class="test-desc">${t.desc} · ${t.duration}</div>
+        ${done ? `<div style="font-size:11px;margin-top:4px;color:${res.color};font-family:var(--fa);">${res.label}</div>` : ''}
+      </div>
+      <div class="test-status ${done?'done':'todo'}">${done?'✓ Fait':'→'}</div>
+    </div>`;
+  }).join('');
+
+  // Neuro profile
+  if (doneCount >= 2) {
+    document.getElementById('neuro-profile-section').style.display = 'block';
+    renderNeuroBars();
+    drawRadar();
+  }
+}
+
+function getAxisScore(axisId) {
+  const p = loadProfil();
+  const tests = TESTS.filter(t => t.neuroAxis === axisId && p[t.id]);
+  if (!tests.length) return null;
+  const avg = tests.reduce((a,t) => {
+    const res = t.interp(p[t.id].score);
+    return a + (1 - res.level / 3);
+  }, 0) / tests.length;
+  return Math.round(avg * 100);
+}
+
+function renderNeuroBars() {
+  document.getElementById('neuro-bars').innerHTML = Object.entries(NEURO_AXES).map(([id, axis]) => {
+    const score = getAxisScore(id);
+    if (score === null) return '';
+    const color = score >= 70 ? 'var(--green)' : score >= 40 ? 'var(--orange)' : 'var(--red)';
+    return `<div class="neuro-bar-row">
+      <div class="neuro-bar-head">
+        <div class="neuro-bar-name">${axis.label}</div>
+        <div class="neuro-bar-val">${score}/100</div>
+      </div>
+      <div style="font-size:10px;color:var(--ink3);margin-bottom:4px;">${axis.desc}</div>
+      <div class="neuro-bar-track">
+        <div class="neuro-bar-fill" style="width:${score}%;background:${color};"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function drawRadar() {
+  const canvas = document.getElementById('radar');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+  const cx = W/2, cy = H/2 + 10;
+  const R = Math.min(W, H) / 2 - 30;
+  const axes = Object.entries(NEURO_AXES);
+  const N = axes.length;
+
+  // Bg rings
+  [0.25, 0.5, 0.75, 1].forEach(r => {
+    ctx.beginPath();
+    axes.forEach(([,], i) => {
+      const angle = (i/N) * 2 * Math.PI - Math.PI/2;
+      const x = cx + R * r * Math.cos(angle);
+      const y = cy + R * r * Math.sin(angle);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.closePath();
+    ctx.strokeStyle = 'rgba(0,0,0,0.07)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  });
+
+  // Axis lines
+  axes.forEach(([, ax], i) => {
+    const angle = (i/N) * 2 * Math.PI - Math.PI/2;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + R * Math.cos(angle), cy + R * Math.sin(angle));
+    ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    // Labels
+    const lx = cx + (R + 18) * Math.cos(angle);
+    const ly = cy + (R + 18) * Math.sin(angle);
+    ctx.font = `bold 9px Syne, sans-serif`;
+    ctx.fillStyle = '#666';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(ax.label.split(' ')[0], lx, ly);
+  });
+
+  // Data shape
+  const scores = axes.map(([id]) => (getAxisScore(id) ?? 40) / 100);
+  ctx.beginPath();
+  axes.forEach(([,], i) => {
+    const angle = (i/N) * 2 * Math.PI - Math.PI/2;
+    const r = scores[i] * R;
+    const x = cx + r * Math.cos(angle);
+    const y = cy + r * Math.sin(angle);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(15,47,122,0.15)';
+  ctx.fill();
+  ctx.strokeStyle = '#0f2f7a';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Dots
+  axes.forEach(([,], i) => {
+    const angle = (i/N) * 2 * Math.PI - Math.PI/2;
+    const r = scores[i] * R;
+    ctx.beginPath();
+    ctx.arc(cx + r*Math.cos(angle), cy + r*Math.sin(angle), 4, 0, Math.PI*2);
+    ctx.fillStyle = '#0f2f7a';
+    ctx.fill();
+  });
+}
+
+// ── QUIZ ──
+window.startTest = (id) => {
+  activeTest = TESTS.find(t => t.id === id);
+  qIndex = 0;
+  answers = [];
+  showScreen('quiz');
+  renderQuestion();
+};
+
+function renderQuestion() {
+  const q = activeTest.questions[qIndex];
+  const total = activeTest.questions.length;
+  document.getElementById('q-badge').textContent = activeTest.name + ' · ' + activeTest.duration;
+  document.getElementById('q-title').textContent = activeTest.name;
+  document.getElementById('q-progress-fill').style.width = (qIndex/total*100) + '%';
+  document.getElementById('q-num').textContent = `Question ${qIndex+1} / ${total}`;
+  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('q-options').innerHTML = q.opts.map((opt, i) =>
+    `<button class="q-opt" onclick="answerQ(${i})">${opt}</button>`
+  ).join('');
+  const sciEl = document.getElementById('q-science');
+  if (q.sci) { sciEl.textContent = '🔬 ' + q.sci; sciEl.style.display = 'block'; }
+  else sciEl.style.display = 'none';
+}
+
+window.answerQ = (optIdx) => {
+  answers.push(activeTest.questions[qIndex].scores[optIdx]);
+  qIndex++;
+  if (qIndex >= activeTest.questions.length) {
+    finishTest();
+  } else {
+    renderQuestion();
+  }
+};
+
+function finishTest() {
+  const score = answers.reduce((a,b) => a+b, 0);
+  const interp = activeTest.interp(score);
+  const p = loadProfil();
+  p[activeTest.id] = { score, label: interp.label, color: interp.color, date: new Date().toISOString().split('T')[0] };
+  saveProfil(p);
+  showScreen('result');
+  renderResult(score, interp);
+}
+
+function renderResult(score, interp) {
+  const recs = getRecommendations(activeTest.id, interp.level, score);
+  document.getElementById('result-content').innerHTML = `
+    <div class="result-header">
+      <div class="result-icon">${activeTest.icon}</div>
+      <div class="result-title">${activeTest.name}</div>
+      <div style="margin:8px 0;">
+        <span class="score-badge" style="background:${interp.color}20;color:${interp.color};border:2px solid ${interp.color};">${interp.label}</span>
+      </div>
+      <div class="result-sub">${interp.txt}</div>
+    </div>
+
+    <div class="result-section">
+      <div class="result-section-title">Ce que ça signifie neurologiquement</div>
+      ${neuroExplanation(activeTest.id, interp.level)}
+    </div>
+
+    <div class="result-section">
+      <div class="result-section-title">Recommandations personnalisées</div>
+      ${recs.map(r => `<div class="rec-item">
+        <div class="rec-icon">${r.icon}</div>
+        <div class="rec-text">${r.text}</div>
+      </div>`).join('')}
+    </div>
+
+    <button class="btn-primary" onclick="showScreen('home');renderHome();">← Retour au profil</button>
+    ${qIndex < TESTS.length ? `<button class="btn-outline" onclick="continueTests()">Test suivant →</button>` : ''}
+  `;
+}
+
+function neuroExplanation(testId, level) {
+  const map = {
+    dast10: ["Aucun signe de circuit de récompense suractivé.", "Circuit de récompense légèrement sollicité. Noyau accumbens actif.", "Sensibilisation du système dopaminergique. Seuil de récompense abaissé.", "Circuit dopaminergique fortement sensibilisé. Dépendance probable."],
+    audit: ["Circuit GABAergique stable. Pas de tolérance à l'alcool.", "Légère adaptation GABA-A. À surveiller.", "Tolérance à l'alcool installée. Sevrage potentiellement risqué.", "Forte dépendance GABAergique. Sevrage médical obligatoire."],
+    impulsivite: ["Cortex préfrontal ventrolatéral efficace. Bon contrôle inhibiteur.", "Contrôle inhibiteur modéré. Cortex PF à renforcer.", "Contrôle inhibiteur faible. Facteur de risque d'addiction élevé."],
+    anxiete: ["Amygdale bien régulée. Peu d'hyperactivation du système sympathique.", "Légère hyperactivation amygdalienne. Risque d'automédication.", "Hyperactivation significative de l'axe HPA (stress). Risque d'automédication.", "Hyperactivation sévère. Anxiété et addiction souvent co-occurrentes."],
+    motivation: ["Stade de précontemplation — pas encore de motivation au changement.", "Stade de contemplation — ambivalence normale.", "Stade de préparation — activation du cortex préfrontal médian.", "Stade d'action — circuits motivationnels engagés."],
+    depression: ["Système sérotoninergique et dopaminergique équilibrés.", "Légère baisse dopaminergique. Anhédonie débutante à surveiller.", "Déficit dopaminergique et sérotoninergique modéré. Double diagnostic à envisager.", "Déficit sévère des systèmes de récompense et humeur. Comorbidité addiction très fréquente."]
+  };
+  const texts = map[testId] || ["Données disponibles."];
+  return `<div class="rec-item">
+    <div class="rec-icon">🧠</div>
+    <div class="rec-text">${texts[Math.min(level, texts.length-1)]}</div>
+  </div>`;
+}
+
+function getRecommendations(testId, level, score) {
+  const all = {
+    dast10: [
+      [{icon:'✓',text:'Continue à monitorer. Utilise le journal de suivi régulièrement.'}],
+      [{icon:'📊',text:'<strong>Module Suivi</strong> : commence à journaliser tes consommations pour identifier les déclencheurs.'},{icon:'🧩',text:'<strong>Tetris anti-craving</strong> quand l\'envie survient.'}],
+      [{icon:'🏥',text:'<strong>Consultation recommandée</strong> chez un addictologue ou médecin généraliste.'},{icon:'🛡',text:'Consulte l\'onglet <strong>RDR</strong> pour les ressources locales.'},{icon:'📉',text:'Fixe un objectif de réduction dans le module <strong>Suivi</strong>.'}],
+      [{icon:'🚨',text:'<strong>Consultation urgente</strong>. Les dommages sont probables.'},{icon:'📞',text:'Appelle <strong>Drogues Info</strong> ou ton médecin généraliste dès aujourd\'hui.'},{icon:'💊',text:'Un traitement de substitution peut être envisagé.'}]
+    ],
+    audit: [
+      [{icon:'✓',text:'Consommation dans les limites recommandées. Continue ainsi.'}],
+      [{icon:'⏰',text:'Tente d\'espacer les occasions de consommation.'},{icon:'📋',text:'Questionnaire AUDIT complet conseillé dans 3 mois.'}],
+      [{icon:'🏥',text:'Parle à ton médecin généraliste. Traitement possible (naltrexone, acamprosate).'},{icon:'📵',text:'Évite alcool + benzos/opioïdes — interaction potentiellement mortelle.'}],
+      [{icon:'🚨',text:'Sevrage alcool sévère = urgence médicale. Ne jamais arrêter brusquement.'},{icon:'📞',text:'Consulte en urgence. Le délire tremens peut être fatal.'}]
+    ],
+    impulsivite: [
+      [{icon:'✓',text:'Bon contrôle inhibiteur. Maintiens les exercices de pleine conscience.'}],
+      [{icon:'🎮',text:'Les <strong>exercices de plasticité cérébrale</strong> (Stroop, Dual Task) renforcent le cortex préfrontal.'},{icon:'⏰',text:'Pratique le délai de 15 min avant toute décision impulsive.'}],
+      [{icon:'🧠',text:'<strong>TCC orientée addictions</strong> très efficace pour l\'impulsivité.'},{icon:'🎮',text:'Joue au Tetris 5 min/jour : renforce l\'hippocampe et le contrôle cognitif.'}]
+    ],
+    anxiete: [
+      [{icon:'✓',text:'Équilibre nerveux satisfaisant. Maintiens ta routine de bien-être.'}],
+      [{icon:'💨',text:'<strong>Respiration carrée</strong> (module Exercices) : 3 min réduisent le cortisol de 15%.'},{icon:'🧘',text:'Évite l\'alcool comme anxiolytique — effet rebond à l\'arrêt.'}],
+      [{icon:'🏥',text:'Consulte pour un suivi anxiété. Les benzos ne sont pas une solution à long terme.'},{icon:'🚫',text:'Attention à l\'automédication avec alcool, cannabis, benzos.'}],
+      [{icon:'🚨',text:'Anxiété sévère — consultation psychiatrique conseillée.'},{icon:'💊',text:'Des traitements efficaces (ISRS, buspirone) existent sans risque d\'addiction.'}]
+    ],
+    motivation: [
+      [{icon:'📖',text:'Pas de pression. La prise de conscience est déjà une étape.'},{icon:'💬',text:'L\'entretien motivationnel avec un professionnel peut t\'aider à avancer.'}],
+      [{icon:'✏️',text:'Écris les pour/contre du changement. La balance décisionnelle est un outil puissant.'},{icon:'🎯',text:'Fixe un <strong>micro-objectif</strong> dans le module Suivi.'}],
+      [{icon:'📅',text:'Fixe une date concrète de changement. L\'intention déclarée multiplie par 3 les chances de succès.'},{icon:'📞',text:'Informe une personne de confiance de ton projet.'}],
+      [{icon:'🏆',text:'Tu es engagé(e). Focus sur <strong>la prévention des rechutes</strong>.'},{icon:'📊',text:'Utilise le journal de suivi pour tracer tes progrès.'}]
+    ],
+    depression: [
+      [{icon:'✓',text:'Humeur stable. Continue à pratiquer les exercices de bien-être.'}],
+      [{icon:'🌞',text:'Luminothérapie 20 min/matin efficace pour la dépression légère.'},{icon:'🏃',text:'Exercice physique : 30 min × 3/sem = antidépresseur documenté.'}],
+      [{icon:'🏥',text:'Consultation recommandée. Dépression et addiction se traitent ensemble.'},{icon:'🚫',text:'Évite l\'automédication : les substances aggravent la dépression à moyen terme.'}],
+      [{icon:'🚨',text:'Consulte en urgence. Le double diagnostic dépression+addiction nécessite un suivi spécialisé.'},{icon:'📞',text:'En cas de pensées sombres : SOS Suicide 0800 32 123 (BE) / 3114 (FR).'}]
+    ]
+  };
+  const recs = all[testId] || [[{icon:'✓',text:'Évaluation complétée.'}]];
+  return recs[Math.min(level, recs.length-1)];
+}
+
+window.continueTests = () => {
+  const p = loadProfil();
+  const next = TESTS.find(t => !p[t.id]);
+  if (next) startTest(next.id);
+  else { showScreen('home'); renderHome(); }
+};
+
+// ── INIT ──
+renderHome();
+</script>
+
+<nav class="bottom-nav">
+  <a class="bn-item" data-href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Accueil</span></a>
+  <a class="bn-item" data-href="fiches.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg><span>Exercices</span></a>
+  <a class="bn-item" data-href="psychochecker.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M11 11m-8 0a8 8 0 1 0 16 0 8 8 0 1 0-16 0"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>Substances</span></a>
+  <a class="bn-item active" data-href="suivi.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 7L13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg><span>Suivi</span></a>
+  <a class="bn-item" data-href="rdr.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>RDR</span></a>
+</nav>
+<script>
+(function(){
+  try{
+    var d=JSON.parse(localStorage.getItem('ctc_v6'));
+    if(d&&d.user&&d.user.name){
+      var p='?name='+encodeURIComponent(d.user.name)+'&region='+(d.user.region||'BE')+(d.user.age?'&age='+d.user.age:'');
+      document.querySelectorAll('.bn-item[data-href]').forEach(function(a){a.href=a.dataset.href+p;});
+    }
+  }catch(e){}
+})();
+</script>
+</body>
+</html>
